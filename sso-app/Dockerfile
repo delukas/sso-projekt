@@ -1,12 +1,19 @@
-
-FROM node
+FROM node AS builder
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
 COPY . .
+RUN npm install
+
+ARG VITE_SSO_URL
+ARG VITE_SSO_REALM
+ARG VITE_SSO_CLIENTID
+
+ENV VITE_SSO_URL=$VITE_SSO_URL
+ENV VITE_SSO_REALM=$VITE_SSO_REALM
+ENV VITE_SSO_CLIENTID=$VITE_SSO_CLIENTID
+
 RUN npm run build
 
 FROM nginx:alpine
-COPY --from=0 /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
