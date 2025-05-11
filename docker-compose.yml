@@ -51,13 +51,17 @@ services:
     ports:
       - "${KEYCLOAK_PORT}:8080"
     volumes:
-      - ./keycloak-data:/opt/keycloak/data
+      - keycloak-data:/opt/keycloak/data
     networks:
       - internal
 
-  frontend:
+  sso-app:
     build:
-      context: sso-app
+      context: ./sso-app
+      args:
+        VITE_SSO_URL: "${KEYCLOAK_HOST}:${KEYCLOAK_PORT}"
+        VITE_SSO_REALM: "${KEYCLOAK_REALM}"
+        VITE_SSO_CLIENTID: "${SSO_APP_CLIENTID}"
     hostname: sso-app
     container_name: sso-app
     ports:
@@ -69,6 +73,7 @@ services:
 
 volumes:
   mongo-data:
+  keycloak-data:
 
 networks:
   internal:
