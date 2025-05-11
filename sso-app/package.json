@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-keycloak/web": "^3.4.0",
+    "@uiw/react-json-view": "^2.0.0-alpha.32",
     "keycloak-js": "^26.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
