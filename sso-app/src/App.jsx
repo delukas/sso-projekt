@@ -16,24 +16,24 @@ const App = () => {
 
     return (
         <div style={{ padding: '2rem' }}>
-            <h1>React Keycloak SSO</h1>
+            <h1 style={{fontFamily: "Calibri"}}>React Keycloak SSO</h1>
             {keycloak.authenticated ? (
                 <div>
-                    <h2>Willkommen, { keycloak.tokenParsed?.name }</h2>
+                    <h2 style={{fontFamily: "Calibri"}}>Willkommen, { keycloak.tokenParsed?.name }</h2>
                     {keycloak.tokenParsed?.realm_access?.roles?.find(value => value === "admin") && (
                         <>
-                            <p style={{color: "red"}}>Diesen Text können nur Admins sehen.</p>
+                            <p style={{color: "red", fontFamily: "Calibri"}}>Diesen Text können nur Admins sehen.</p>
                             <br/>
                         </>
                     )}
-                    <button onClick={ () => keycloak.logout() }>Abmelden</button>
+                    <button style={{fontFamily: "Calibri"}} onClick={ () => keycloak.logout() }>Abmelden</button>
                     <br/>
-                    <p>Das ist dein Token:</p>
+                    <p style={{fontFamily: "Calibri"}}>Das ist dein Token:</p>
                     <br/>
                     <JsonView value={keycloak.tokenParsed} style={githubLightTheme}/>
                 </div>
           ) : (
-                <button onClick={ () => keycloak.login() }>Anmelden</button>
+                <button style={{fontFamily: "Calibri"}} onClick={ () => keycloak.login() }>Anmelden</button>
           )}
         </div>
     );
