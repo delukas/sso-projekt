@@ -20,7 +20,7 @@ const App = () => {
                         </>
                     )}
                     <button style={{fontFamily: "Calibri"}} onClick={ () => keycloak.logout() }>Abmelden</button>
-                    {keycloak.tokenParsed?.resource_access?.["sso-app"]?.roles?.find(value => value === "access") ?
+                    {keycloak.tokenParsed?.resource_access?.[import.meta.env.VITE_SSO_CLIENTID]?.roles?.find(value => value === "access") ?
                         <>
                             <br/>
                             <p style={{fontFamily: "Calibri"}}>Das ist dein Token:</p>
