@@ -1,8 +1,7 @@
 # Single Sign On (SSO) in Action - Beispielimplementation einer SSO-Umgebung
 
 ## Vorwort
-Folgend stehen `<EXAMPLE_ENV>` für Variablen aus der `.env`-Datei
-und `[EXAMPLE_CONFIG]` für eigene Konfigurationseinstellungen in den Benutzeroberflächen. Beim Setup wird davon ausgegangen das die Standardwerte beibehalten werden, daher sind URLs statisch hinterlegt.
+Folgend stehen `<EXAMPLE_ENV>` für Variablen aus der `.env`-Datei. Bei der Konfiguration wird davon ausgegangen, dass die Standardwerte beibehalten werden, daher sind URLs statisch hinterlegt.
 
 
 ## Voraussetzungen
@@ -10,12 +9,12 @@ und `[EXAMPLE_CONFIG]` für eigene Konfigurationseinstellungen in den Benutzerob
 
 ## Beschreibung 
 
-Es wird ein einfaches Szenario für eine Authentifizierung mittels SSO simuliert. Zentrale Rolle spielen hier der Identity-Provider Keycloak sowie die Service-Provider Rocket.Chat (SAML) und die SSO-App (OIDC). Diese werden für den lokalen Betrieb konfiguriert, daher wird hier kein HTTPS verwendet.
+Es wird ein einfaches Szenario für eine Authentifizierung mittels Single Sign On (SSO) simuliert. Zentrale Rolle spielen hier der Identity-Provider Keycloak sowie die Service-Provider Rocket.Chat (SAML) und die SSO-App (OIDC). Diese werden für den lokalen Betrieb konfiguriert, daher wird hier kein HTTPS verwendet.
 Jedoch wird bei der Konfiguration darauf geachtet, mögliche Risiken zu minimieren, um eine mögliche Anwendung in der Produktion zu beschleunigen.
 
-Die SSO-App ist lediglich eine Beispielanwendung, zur Veranschaulichung der Unterstützung von OIDC durch Keycloak. Hier lässt sich der erhaltene ID-Token anzeigen.
+Die SSO-App ist lediglich eine Beispielanwendung, zur Veranschaulichung der Unterstützung von OIDC durch Keycloak. In der bereitgestellten Benutzeroberfläche (http://localhost:5173) lässt sich der ID-Token des Nutzers anzeigen.
 
-Rocket.Chat kommuniziert über SAML mit Keycloak.
+Rocket.Chat dient als weitere Beispielanwendung und kommuniziert durch das SAML-Protokoll mit dem Identity Provider Keycloak.
 
 ## Starten
 Ändere den Dateinamen von `.env.example` zu `.env` und konfiguriere diese bei Bedarf. Starte die Container mit `docker compose up -d`. Danach sind KeyCloak, Rocket.Chat und die SSO-App erreichbar:
@@ -25,6 +24,9 @@ Rocket.Chat kommuniziert über SAML mit Keycloak.
 | Keycloak    | http://localhost:8080 | `<KEYCLOAK_HOST>:<KEYCLOAK_PORT>`     |
 | Rocket.Chat | http://localhost:3000 | `<ROCKETCHAT_HOST>:<ROCKETCHAT_PORT>` |
 | SSO-App     | http://localhost:5173 | `<SSO_APP_HOST>:<SSO_APP_PORT>`       |
+
+## Stoppen
+Um die Container zu stoppen nutze `docker compose down` *(! ohne `-v`)*
 
 ## QuickStart mit Realm-Import
 
@@ -46,7 +48,7 @@ Rocket.Chat kommuniziert über SAML mit Keycloak.
 #### 2. Vorkonfiguriertes Realm importieren
 - Navigate to `Manage realms`
 - Click `Create realm`
-- Click `Browse...` and select the `realm-export.json`-File provided by this repository at `./realm-export`
+- Click `Browse...` and select the `realm-export.json`-File provided by this repository at `./example-realm`
 - Click `Create`
 - Wait one moment
 - Check if `<KEYCLOAK_REALM>` is displayed at the top left next to `Current realm`
@@ -104,7 +106,21 @@ Rocket.Chat kommuniziert über SAML mit Keycloak.
   - Set `Zwei-Faktor-Authentifizierung per E-Mail aktivieren`: Off
   - Click `Änderungen speichern`
 
-Now you are ready :-)
+Nun 
+
+## Erste Anmeldung
+>Nach der ersten Anmeldung mit Nutzernamen und temporärem Passwort wird zunächst die Einrichtung eines Authenticators gefordert. Anschließend muss das Passwort geändert und dann die Nutzerinformationen vervollständigt werden. Bei der Anmeldung bei Rocket.Chat wird man nun nach einem Nutzernamen gefragt. Mit dieser Konfiguration sind die Zugriffe auf die Clients wie folgt beschränkt:
+
+| Realm-Rolle | Zugriff              |
+|-------------|----------------------|
+| admin       | SSO-App, Rocket.Chat |
+| user        | Rocket.Chat          |
+| keine Rolle | keinen Zugriff       |
+
+## Zurücksetzen
+>Entweder die Volumes von MongoDB und Keycloak über Docker Desktop/CLI löschen oder `docker compose down -v` benutzen beim Stoppen der Container. Damit werden alle dazugehörigen Volumes gelöscht und das Setup muss erneut ausgeführt werden.
+
+---
 
 ## Manuelle Konfiguration
 >Die manuelle Konfiguration ist als JSON verfügbar und kann als Realm in Keycloak importiert werden.
@@ -392,21 +408,6 @@ openssl req -newkey rsa:3072 -new -x509 -days 3652 -nodes -out saml.crt -keyout 
   - Set `Browser Flow` to `Rocket.Chat Browserflow`
   - Click `Save`
 
-### Erste Anmeldung
-  Nach der ersten Anmeldung mit Nutzernamen und temporärem Passwort wird zunächst die Einrichtung eines Authenticators gefordert. Anschließend muss das Passwort geändert und dann die Nutzerinformationen vervollständigt werden. Bei der Anmeldung bei Rocket.Chat wird man nun nach einem Nutzernamen gefragt. Mit dieser Konfiguration sind die Zugriffe auf die Clients wie folgt beschränkt:
-
-| Realm-Rolle | Zugriff              |
-|-------------|----------------------|
-| admin       | SSO-App, Rocket.Chat |
-| user        | Rocket.Chat          |
-| keine Rolle | keinen Zugriff       |
-
-## Stoppen
-Um die Container zu stoppen nutze `docker compose down` *(! ohne `-v`)*
-
-## Zurücksetzen
-Entweder die Volumes von MongoDB und Keycloak über Docker Desktop/CLI löschen oder `docker compose down -v` benutzen beim Stoppen der Container. Damit werden alle dazugehörigen Volumes gelöscht und das Setup muss erneut ausgeführt werden.
-
 ## Ablaufdatum Beispielschlüssel
 Für die Veranschaulichung wurde in das Repository ein Schlüsselpaar hinzugefügt `./example-keys`. Der Gebrauch dieser Schlüssel ist nicht mehr sicher, da der private Schlüssel von jedem öffentlich abrufbar ist. Für die Umsetzung in der Testumgebung genügen diese Schlüssel jedoch, da es sich um eine lokale Beispielumgebung handelt und kein Zugriff durch externe möglich ist. Bei Anwendung in der Produktion dürfen diese Schlüssel nicht verwendet werden.
->Das Ablaufdatum dieser Schlüssel ist der **10.05.2035 um 10:31**.
+>Das Ablaufdatum der Beispielschlüssel ist der **10.05.2035 um 10:31**.
