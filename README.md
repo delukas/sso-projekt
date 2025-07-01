@@ -25,9 +25,6 @@ Rocket.Chat dient als weitere Beispielanwendung und kommuniziert durch das SAML-
 | Rocket.Chat | http://localhost:3000 | `<ROCKETCHAT_HOST>:<ROCKETCHAT_PORT>` |
 | SSO-App     | http://localhost:5173 | `<SSO_APP_HOST>:<SSO_APP_PORT>`       |
 
-## Stoppen
-Um die Container zu stoppen nutze `docker compose down` *(! ohne `-v`)*
-
 ## QuickStart mit Realm-Import
 
 > Für die Erstellung der Passwörter muss auf die konfigurierten Anforderungen geachtet werden:
@@ -116,6 +113,9 @@ Nun
 | admin       | SSO-App, Rocket.Chat |
 | user        | Rocket.Chat          |
 | keine Rolle | keinen Zugriff       |
+
+## Stoppen
+Um die Container zu stoppen nutze `docker compose down` *(! ohne `-v`)*
 
 ## Zurücksetzen
 >Entweder die Volumes von MongoDB und Keycloak über Docker Desktop/CLI löschen oder `docker compose down -v` benutzen beim Stoppen der Container. Damit werden alle dazugehörigen Volumes gelöscht und das Setup muss erneut ausgeführt werden.
