@@ -56,8 +56,6 @@ services:
         VITE_SSO_CLIENTID: "${SSO_APP_CLIENTID}"
     ports:
       - "${SSO_APP_PORT}:80"
-    depends_on:
-      - keycloak
 
 volumes:
   mongo-data:
